@@ -151,3 +151,67 @@ class TestInterfacesWriter(unittest.TestCase):
             content = open(tempf.name).read().split("\n")
             for line_written, line_expected in zip(content, expected):
                 self.assertEqual(line_written.strip(), line_expected)
+
+    def test_header_comment_no_symbol_write(self):
+        """Write without symbol should work"""
+
+        options = {
+            'addrFam': 'inet',
+            'source': 'dhcp',
+            'name': 'eth0',
+            'auto': True
+        }
+        header_comment = ('This is a multiple line header comment\n'
+                          'without the preceding # header, it should be placed at the top\n'
+                          'of the file with each line having a "# " in front.')
+
+        expected = [
+            '# This is a multiple line header comment',
+            '# without the preceding # header, it should be placed at the top',
+            '# of the file with each line having a "# " in front.',
+            '',
+            'auto eth0',
+            'iface eth0 inet dhcp'
+        ]
+
+        adapter = NetworkAdapter(options=options)
+        with tempfile.NamedTemporaryFile() as tempf:
+            writer = InterfacesWriter([adapter], tempf.name,
+                                      header_comment=header_comment)
+            writer.write_interfaces()
+
+            content = open(tempf.name).read().split("\n")
+            for line_written, line_expected in zip(content, expected):
+                self.assertEqual(line_written.strip(), line_expected)
+
+    def test_header_comment_symbol_write(self):
+        """Write with symbol should work"""
+
+        options = {
+            'addrFam': 'inet',
+            'source': 'dhcp',
+            'name': 'eth0',
+            'auto': True
+        }
+        header_comment = ('# This is a multiple line header comment\n'
+                          '# with the preceding # header, it should be placed at the top\n'
+                          '# of the file with each line having a "# " in front.')
+
+        expected = [
+            '# This is a multiple line header comment',
+            '# with the preceding # header, it should be placed at the top',
+            '# of the file with each line having a "# " in front.',
+            '',
+            'auto eth0',
+            'iface eth0 inet dhcp'
+        ]
+
+        adapter = NetworkAdapter(options=options)
+        with tempfile.NamedTemporaryFile() as tempf:
+            writer = InterfacesWriter([adapter], tempf.name,
+                                      header_comment=header_comment)
+            writer.write_interfaces()
+
+            content = open(tempf.name).read().split("\n")
+            for line_written, line_expected in zip(content, expected):
+                self.assertEqual(line_written.strip(), line_expected)

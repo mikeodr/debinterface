@@ -16,6 +16,7 @@ class InterfacesWriter(object):
     _hotplug = Template('allow-hotplug $name\n')
     _iface = Template('iface $name $addrFam $source\n')
     _cmd = Template('\t$varient $value\n')
+    _comment = Template('# $line\n')
 
     _addressFields = [
         'address', 'network', 'netmask', 'broadcast',
@@ -25,11 +26,21 @@ class InterfacesWriter(object):
     _bridgeFields = ['ports', 'fd', 'hello', 'maxage', 'stp', 'maxwait']
     _plugins = ["hostapd"]
 
-    def __init__(self, adapters, interfaces_path, backup_path=None):
+    def __init__(self, adapters, interfaces_path, backup_path=None,
+                 header_comment=None):
         """ if backup_path is None => no backup """
         self._adapters = adapters
         self._interfaces_path = interfaces_path
         self._backup_path = backup_path
+        try:
+            is_str = isinstance(header_comment, basestring)
+        except NameError:
+            is_str = isinstance(header_comment, str)
+
+        if is_str:
+            self._header_comment = header_comment
+        else:
+            self._header_comment = None
 
     @property
     def adapters(self):
@@ -46,6 +57,8 @@ class InterfacesWriter(object):
         try:
             # Prepare to write the new interfaces file.
             with toolutils.atomic_write(self._interfaces_path) as interfaces:
+                # Write any header comments.
+                self._write_header_comment(interfaces)
                 # Loop through the provided networkAdaprers and
                 # write the new file.
                 for adapter in self._adapters:
@@ -89,6 +102,21 @@ class InterfacesWriter(object):
             raise ValueError("Invalid network interfaces file "
                              "written to disk, restoring to previous "
                              "one : {0}".format(output))
+
+    def _write_header_comment(self, interfaces):
+        if self._header_comment:
+            for line in self._header_comment.split('\n'):
+                # Check the beginning of the line for a comment field
+                # if it does not exist, add it.
+                if line[:2] != "# ":
+                    line = self._comment.substitute(line=line)
+                else:
+                    # split strips the newline, add it back
+                    line = line + '\n'
+                interfaces.write(line)
+
+            # Create a blank line between comment and start of interfaces
+            interfaces.write('\n')
 
     def _write_adapter(self, interfaces, adapter):
         try:
