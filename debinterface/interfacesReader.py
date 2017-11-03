@@ -10,15 +10,22 @@ class InterfacesReader(object):
     def __init__(self, interfaces_path):
         self._interfaces_path = interfaces_path
         self._reset()
+        self._header_comments = ''
 
     @property
     def adapters(self):
         return self._adapters
 
-    def parse_interfaces(self):
+    @property
+    def header_comments(self):
+        return self._header_comments
+
+    def parse_interfaces(self, read_comments=False):
         """ Read /etc/network/interfaces (or specified file).
             Save adapters
-            Return an array of networkAdapter instances.
+            Return an array of networkAdapter instances if read_comments
+            is false.
+            Return (adapters, header_comments) if read_comments is true.
         """
         self._reset()
         self._read_lines()
@@ -32,21 +39,33 @@ class InterfacesReader(object):
             for adapter in self._adapters:
                 if adapter.attributes['name'] == entry:
                     adapter.setHotplug(True)
-
-        return self._adapters
+        if not read_comments:
+            return self._adapters
+        else:
+            return self._adapters, self._header_comments
 
     def _read_lines(self):
         # Open up the interfaces file. Read only.
         with open(self._interfaces_path, "r") as interfaces:
+            # When the first non-comment line is parsed, header
+            # comments have been read in.
+            header_parsed = False
             # Loop through the interfaces file.
             for line in interfaces:
                 # 1. Identify the clauses by analyzing the first
                 # word of each line.
                 # 2. Go to the next line if the current line is a comment.
                 # line = line.strip().replace("\n", "")
-                if not line or line.strip().startswith("#") is True:
+                if not line:
                     pass
+                elif line.strip().startswith("#") is True:
+                    if not header_parsed:
+                        self._header_comments += line
                 else:
+                    # Header comments can no longer
+                    # be parsed in when the first interfaces
+                    # line is parsed in.
+                    header_parsed = True
                     self._parse_iface(line)
                     # Ignore blank lines.
                     if line.isspace() is True:

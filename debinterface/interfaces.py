@@ -12,7 +12,8 @@ class Interfaces(object):
 
     def __init__(self, update_adapters=True,
                  interfaces_path='/etc/network/interfaces',
-                 backup_path=None):
+                 backup_path=None,
+                 header_comment=None):
         """ By default read interface file on init
 
             Args:
@@ -22,6 +23,9 @@ class Interfaces(object):
                     /etc/network/interfaces
                 backup_path (str, optional): default to
                     /etc/network/interfaces.bak
+                header_comment(str, optional): default to
+                    none, otherwise sets comments at the
+                    top of the interfaces file.
         """
 
         self._set_paths(interfaces_path, backup_path)
@@ -43,6 +47,10 @@ class Interfaces(object):
     def backup_path(self):
         return self._backup_path
 
+    @property
+    def header_comment(self):
+        return self._header_comment
+
     def updateAdapters(self):
         """ (re)read interfaces file and save adapters """
         reader = InterfacesReader(self._interfaces_path)
@@ -55,7 +63,8 @@ class Interfaces(object):
         return InterfacesWriter(
             self._adapters,
             self._interfaces_path,
-            self._backup_path
+            self._backup_path,
+            self._header_comments
         ).write_interfaces()
 
     def getAdapter(self, name):
