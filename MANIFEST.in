@@ -14,4 +14,4 @@ include *.py
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs Makefile
-.pylintrc
+include .pylintrc
