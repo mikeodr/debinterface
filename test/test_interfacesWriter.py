@@ -130,7 +130,8 @@ class TestInterfacesWriter(unittest.TestCase):
             'gateway': '192.168.0.254',
             'address': '192.168.0.250',
             'netmask': '255.255.255.0',
-            'dns-nameservers': ['8.8.8.8', '8.8.4.4', '4.2.2.2']
+            'dns-nameservers': ['8.8.8.8', '8.8.4.4', '4.2.2.2'],
+            'dns-search': ['mydomain.com', 'myotherdomain.com']
         }
 
         expected = [
@@ -141,6 +142,7 @@ class TestInterfacesWriter(unittest.TestCase):
             "broadcast 192.168.0.255",
             "gateway 192.168.0.254",
             "dns-nameservers 8.8.8.8 8.8.4.4 4.2.2.2",
+            "dns-search mydomain.com myotherdomain.com"
         ]
         adapter = NetworkAdapter(options={})
         adapter._ifAttributes = options

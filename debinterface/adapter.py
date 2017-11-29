@@ -228,6 +228,19 @@ class NetworkAdapter(object):
             'dns-nameservers', VALID_OPTS['dns-nameservers'], nameservers)
         self._ifAttributes['dns-nameservers'] = nameservers
 
+    def setDnsSearch(self, searchUri):
+        """ Set the dns default search URI.
+
+            Args:
+                searchURI (str): The default search domain
+
+            Raises:
+                ValueError: if there is a validation error
+        """
+        self._validator.validate_one(
+            'dns-search', VALID_OPTS['dns-search'], searchUri)
+        self._ifAttributes['dns-search'] = searchUri
+
     def setBropts(self, opts):
         """Set the bridge options of an interface.
 

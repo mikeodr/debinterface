@@ -102,6 +102,10 @@ class InterfacesReader(object):
                 if len(nameservers) == 1:
                     nameservers = nameservers[0]
                 self._adapters[self._context].setDnsNameservers(nameservers)
+            elif sline[0] == 'dns-search':
+                searchUri = sline
+                del searchUri[0]
+                self._adapters[self._context].setDnsSearch(searchUri)
             elif sline[0].startswith('bridge') is True:
                 opt = sline[0].split('_')
                 sline.pop(0)

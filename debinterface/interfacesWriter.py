@@ -20,7 +20,7 @@ class InterfacesWriter(object):
 
     _addressFields = [
         'address', 'network', 'netmask', 'broadcast',
-        'gateway', 'dns-nameservers'
+        'gateway', 'dns-nameservers', 'dns-search'
     ]
     _prepFields = ['pre-up', 'up', 'down', 'pre-down', 'post-down']
     _bridgeFields = ['ports', 'fd', 'hello', 'maxage', 'stp', 'maxwait']

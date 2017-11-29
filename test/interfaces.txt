@@ -81,3 +81,11 @@ iface ath2 inet static
        wireless-mode Ad-hoc
        # NAT not needed for node
        up nat.sh ath2 eth0 "10.1.10.0/24"
+
+auto eth2
+iface eth2 inet static
+   address 172.20.1.23
+   netmask 255.255.255.0
+   gateway 172.20.1.1
+   dns-nameservers 172.16.1.1 172.16.1.2
+   dns-search mydomain.com myotherdomain.com

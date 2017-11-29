@@ -11,9 +11,9 @@ INF4_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "interfaces
 
 class TestInterfacesReader(unittest.TestCase):
     def test_parse_interfaces_count(self):
-        """Should have 8 adapters"""
+        """Should have 9 adapters"""
 
-        nb_adapters = 8
+        nb_adapters = 9
         reader = InterfacesReader(INF_PATH)
         adapters = reader.parse_interfaces()
         self.assertEqual(len(adapters), nb_adapters)
@@ -58,6 +58,17 @@ class TestInterfacesReader(unittest.TestCase):
         self.assertNotEqual(eth1, None)
         self.assertEqual(eth1.attributes["dns-nameservers"], "8.8.8.8")
 
+    def test_dnssearch_not_unknown(self):
+        """dns-search should be found."""
+        reader = InterfacesReader(INF_PATH)
+        eth2 = next(
+            (x for x in reader.parse_interfaces() if x.attributes['name'] == "eth2"),
+            None
+        )
+        self.assertNotEqual(eth2, None)
+        self.assertEqual(eth2.attributes['dns-search'], ['mydomain.com', 'myotherdomain.com'])
+        self.assertEqual(eth2.attributes['dns-nameservers'], ['172.16.1.1', '172.16.1.2'])
+
     def test_interfaces2(self):
         """All adapters should validate"""
         reader = InterfacesReader(INF2_PATH)
@@ -96,6 +107,7 @@ class TestInterfacesReader(unittest.TestCase):
             'source': 'static',
             'bridge-opts': {},
             'dns-nameservers': ['8.8.8.8', '8.8.4.4', '4.2.2.2'],
+            'dns-search': ['mydomain.com', 'myotherdomain.com'],
             'netmask': '255.255.255.0',
             'address': '10.1.20.10',
             'up': [],

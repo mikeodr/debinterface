@@ -37,6 +37,7 @@ VALID_OPTS = {
     "berr": {"in": ["on", "off"]},
     'bridge-opts': {'type': dict},
     'dns-nameservers': {'type': 'IPList'},
+    'dns-search': {'type': 'URIList'},
     "mode": {"in": ["GRE", "IPIP"]},
     'scope': {'in': ['global', 'link', 'host', 'site', 'host']},
     'addrFam': {'in': ['inet', 'inet6', 'ipx', 'can']},
@@ -159,6 +160,10 @@ class NetworkAdapterValidation(object):
                     self.validate_ip(val, opt)
             elif validations["type"] == "BROADCAST_IP":
                 self.validate_broadcast_ip(val, opt)
+            elif validations["type"] == 'URIList':
+                if isinstance(val, list):
+                    for search in val:
+                        assert isinstance(search, str)
             else:
                 if not isinstance(val, validations['type']):
                     msg = "{0} should be {1}".format(opt, validations['type'])
