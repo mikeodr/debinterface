@@ -13,7 +13,7 @@ class TestInterfacesReader(unittest.TestCase):
     def test_parse_interfaces_count(self):
         """Should have 9 adapters"""
 
-        nb_adapters = 9
+        nb_adapters = 10
         reader = InterfacesReader(INF_PATH)
         adapters = reader.parse_interfaces()
         self.assertEqual(len(adapters), nb_adapters)
@@ -162,3 +162,11 @@ class TestInterfacesReader(unittest.TestCase):
                                                   'pre-up': [],
                                                   'source': 'loopback',
                                                   'up': []})
+
+    def test_read_wpa_conf(self):
+        reader = InterfacesReader(INF_PATH)
+        wlan2 = next(
+            (x for x in reader.parse_interfaces() if x.attributes['name'] == 'wlan2'),
+            None
+        )
+        self.assertEqual(wlan2.attributes['wpa-conf'], '/etc/wpa_supplicant/wpa_supplicant.conf')

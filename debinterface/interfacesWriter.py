@@ -24,7 +24,7 @@ class InterfacesWriter(object):
     ]
     _prepFields = ['pre-up', 'up', 'down', 'pre-down', 'post-down']
     _bridgeFields = ['ports', 'fd', 'hello', 'maxage', 'stp', 'maxwait']
-    _plugins = ["hostapd"]
+    _plugins = ['hostapd', 'wpa-conf']
 
     def __init__(self, adapters, interfaces_path, backup_path=None,
                  header_comment=None):

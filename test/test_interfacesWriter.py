@@ -118,6 +118,32 @@ class TestInterfacesWriter(unittest.TestCase):
             for line_written, line_expected in zip(content, expected):
                 self.assertEqual(line_written.strip(), line_expected)
 
+    def test_supplicant_conf_write(self):
+        '''Test what wpa-conf is written out.'''
+
+        options = {
+            'addrFam': 'inet',
+            'source': 'dhcp',
+            'name': 'wlan0',
+            'auto': True,
+            'wpa-conf': '/etc/wpa_supplicant/wpa_supplicant.conf'
+        }
+
+        expected = [
+            "auto wlan0",
+            "iface wlan0 inet dhcp",
+            "wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf"
+        ]
+        adapter = NetworkAdapter(options)
+        with tempfile.NamedTemporaryFile() as tempf:
+            writer = InterfacesWriter([adapter], tempf.name)
+            writer.write_interfaces()
+
+            content = open(tempf.name).read().split("\n")
+            print(content)
+            for line_written, line_expected in zip(content, expected):
+                self.assertEqual(line_written.strip(), line_expected)
+
     def test_multiDns_write(self):
         """Should work"""
 
@@ -144,8 +170,7 @@ class TestInterfacesWriter(unittest.TestCase):
             "dns-nameservers 8.8.8.8 8.8.4.4 4.2.2.2",
             "dns-search mydomain.com myotherdomain.com"
         ]
-        adapter = NetworkAdapter(options={})
-        adapter._ifAttributes = options
+        adapter = NetworkAdapter(options)
         with tempfile.NamedTemporaryFile() as tempf:
             writer = InterfacesWriter([adapter], tempf.name)
             writer.write_interfaces()

@@ -257,6 +257,15 @@ class NetworkAdapter(object):
             'bridge-opts', VALID_OPTS['bridge-opts'], opts)
         self._ifAttributes['bridge-opts'] = opts
 
+    def setWpaConf(self, conf_path):
+        '''Set the wpa supplicant configuration path for supplicant
+        config for wireless interfaces.
+
+        Args:
+            conf_path (str): Path at which the supplicant config is located.
+        '''
+        self._ifAttributes['wpa-conf'] = conf_path
+
     def replaceBropt(self, key, value):
         """Set a discrete bridge option key with value
 
@@ -472,14 +481,18 @@ class NetworkAdapter(object):
                     'network': self.setNetwork,
                     'auto': self.setAuto,
                     'allow-hotplug': self.setHotplug,
+                    'hotplug': self.setHotplug,
                     'bridgeOpts': self.setBropts,
+                    'bridge-opts': self.setBropts,
                     'up': self.setUp,
                     'down': self.setDown,
                     'pre-up': self.setPreUp,
                     'pre-down': self.setPreDown,
                     'post-down': self.setPostDown,
                     'hostapd': self.setHostapd,
-                    'dns-nameservers': self.setDnsNameservers
+                    'dns-nameservers': self.setDnsNameservers,
+                    'dns-search': self.setDnsSearch,
+                    'wpa-conf': self.setWpaConf
                 }
                 for key, value in options.items():
                     if key in roseta:

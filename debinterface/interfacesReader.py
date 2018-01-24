@@ -96,6 +96,8 @@ class InterfacesReader(object):
                 self._adapters[self._context].setNetwork(sline[1])
             elif sline[0] == 'hostapd':
                 self._adapters[self._context].setHostapd(sline[1])
+            elif sline[0] == 'wpa-conf':
+                self._adapters[self._context].setWpaConf(sline[1])
             elif sline[0] == 'dns-nameservers':
                 nameservers = sline
                 del nameservers[0]

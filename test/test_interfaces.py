@@ -17,7 +17,7 @@ class TestInterfaces(unittest.TestCase):
         itfs = Interfaces(update_adapters=False, interfaces_path=INF_PATH)
         self.assertEqual(len(itfs.adapters), 0)
         itfs.updateAdapters()
-        self.assertEqual(len(itfs.adapters), 9)
+        self.assertEqual(len(itfs.adapters), 10)
 
     def test_get_existing_adapter(self):
         itfs = Interfaces(interfaces_path=INF_PATH)
