@@ -58,7 +58,7 @@ tox==2.6.0
 tqdm==4.19.5
 traitlets==4.3.1
 twine==1.9.1
-urllib3==1.22
+urllib3==1.24.2
 virtualenv==15.1.0
 watchdog==0.8.3
 wcwidth==0.1.7
